@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Gastec plus</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/font-awesome.min.css" />
+
+  <script>
+    /**
+     * @preserve HTML5 Shiv 3.7.3 | @afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
+     */
+    (function (window, document) {
+      /*jshint evil:true */
+      /** version */
+      var version = "3.7.3";
+
+      /** Preset options */
+      var options = window.html5 || {};
+
+      /** Used to skip problem elements */
+      var reSkip = /^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i;
+
+      /** Not all elements can be cloned in IE **/
+      var saveClones = /^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i;
+
+      /** Detect whether the browser supports default html5 styles */
+      var supportsHtml5Styles;
+
+      /** Name of the expando, to work with multiple documents or to re-shiv one document */
+      var expando = "_html5shiv";
+
+      /** The id for the the documents expando */
+      var expanID = 0;
+
+      /** Cached data for each document */
+      var expandoData = {};
+
+      /** Detect whether the browser supports unknown elements */
+      var supportsUnknownElements;
+
+      (function () {
+        try {
+          var a = document.createElement("a");
+          a.innerHTML = "<xyz></xyz>";
+          //if the hidden property is implemented we can assume, that the browser supports basic HTML5 Styles
+          supportsHtml5Styles = "hidden" in a;
+
+          supportsUnknownElements =
+            a.childNodes.length == 1 ||
+            (function () {
+              // assign a false positive if unable to shiv
+              document.createElement("a");
+              var frag = document.createDocumentFragment();
+              return (
+                typeof frag.cloneNode == "undefined" ||
+                typeof frag.createDocumentFragment == "undefined" ||
+                typeof frag.createElement == "undefined"
+              );
+            })();
+        } catch (e) {
+          // assign a false positive if detection fails => unable to shiv
+          supportsHtml5Styles = true;
+          supportsUnknownElements = true;
+        }
+      })();
+
+      /*--------------------------------------------------------------------------*/
+
+      /**
+       * Creates a style sheet with the given CSS text and adds it to the document.
+       * @private
+       * @param {Document} ownerDocument The document.
+       * @param {String} cssText The CSS text.
+       * @returns {StyleSheet} The style element.
+       */
+      function addStyleSheet(ownerDocument, cssText) {
+        var p = ownerDocument.createElement("p"),
+          parent =
+            ownerDocument.getElementsByTagName("head")[0] ||
+            ownerDocument.documentElement;
+
+        p.innerHTML = "x<style>" + cssText + "</style>";
+        return parent.insertBefore(p.lastChild, parent.firstChild);
+      }
+
+      /**
+       * Returns the value of `html5.elements` as an array.
+       * @private
+       * @returns {Array} An array of shived element node names.
+       */
+      function getElements() {
+        var elements = html5.elements;
+        return typeof elements == "string" ? elements.split(" ") : elements;
+      }
+
+      /**
+       * Extends the built-in list of html5 elements
+       * @memberOf html5
+       * @param {String|Array} newElements whitespace separated list or array of new element names to shiv
+       * @param {Document} ownerDocument The context document.
+       */
+      function addElements(newElements, ownerDocument) {
+        var elements = html5.elements;
+        if (typeof elements != "string") {
+          elements = elements.join(" ");
+        }
+        if (typeof newElements != "string") {
+          newElements = newElements.join(" ");
+        }
+        html5.elements = elements + " " + newElements;
+        shivDocument(ownerDocument);
+      }
+
+      /**
+       * Returns the data associated to the given document
+       * @private
+       * @param {Document} ownerDocument The document.
+       * @returns {Object} An object of data.
+       */
+      function getExpandoData(ownerDocument) {
+        var data = expandoData[ownerDocument[expando]];
+        if (!data) {
+          data = {};
+          expanID++;
+          ownerDocument[expando] = expanID;
+          expandoData[expanID] = data;
+        }
+        return data;
+      }
+
+      /**
+       * returns a shived element for the given nodeName and document
+       * @memberOf html5
+       * @param {String} nodeName name of the element
+       * @param {Document|DocumentFragment} ownerDocument The context document.
+       * @returns {Object} The shived element.
+       */
+      function createElement(nodeName, ownerDocument, data) {
+        if (!ownerDocument) {
+          ownerDocument = document;
+        }
+        if (supportsUnknownElements) {
+          return ownerDocument.createElement(nodeName);
+        }
+        if (!data) {
+          data = getExpandoData(ownerDocument);
+        }
+        var node;
+
+        if (data.cache[nodeName]) {
+          node = data.cache[nodeName].cloneNode();
+        } else if (saveClones.test(nodeName)) {
+          node = (data.cache[nodeName] = data.createElem(
+            nodeName
+          )).cloneNode();
+        } else {
+          node = data.createElem(nodeName);
+        }
+
+        // Avoid adding some elements to fragments in IE < 9 because
+        // * Attributes like `name` or `type` cannot be set/changed once an element
+        //   is inserted into a document/fragment
+        // * Link elements with `src` attributes that are inaccessible, as with
+        //   a 403 response, will cause the tab/window to crash
+        // * Script elements appended to fragments will execute when their `src`
+        //   or `text` property is set
+        return node.canHaveChildren && !reSkip.test(nodeName) && !node.tagUrn
+          ? data.frag.appendChild(node)
+          : node;
+      }
+
+      /**
+       * returns a shived DocumentFragment for the given document
+       * @memberOf html5
+       * @param {Document} ownerDocument The context document.
+       * @returns {Object} The shived DocumentFragment.
+       */
+      function createDocumentFragment(ownerDocument, data) {
+        if (!ownerDocument) {
+          ownerDocument = document;
+        }
+        if (supportsUnknownElements) {
+          return ownerDocument.createDocumentFragment();
+        }
+        data = data || getExpandoData(ownerDocument);
+        var clone = data.frag.cloneNode(),
+          i = 0,
+          elems = getElements(),
+          l = elems.length;
+        for (; i < l; i++) {
+          clone.createElement(elems[i]);
+        }
+        return clone;
+      }
+
+      /**
+       * Shivs the `createElement` and `createDocumentFragment` methods of the document.
+       * @private
+       * @param {Document|DocumentFragment} ownerDocument The document.
+       * @param {Object} data of the document.
+       */
+      function shivMethods(ownerDocument, data) {
+        if (!data.cache) {
+          data.cache = {};
+          data.createElem = ownerDocument.createElement;
+          data.createFrag = ownerDocument.createDocumentFragment;
+          data.frag = data.createFrag();
+        }
+
+        ownerDocument.createElement = function (nodeName) {
+          //abort shiv
+          if (!html5.shivMethods) {
+            return data.createElem(nodeName);
+          }
+          return createElement(nodeName, ownerDocument, data);
+        };
+
+        ownerDocument.createDocumentFragment = Function(
+          "h,f",
+          "return function(){" +
+          "var n=f.cloneNode(),c=n.createElement;" +
+          "h.shivMethods&&(" +
+          // unroll the `createElement` calls
+          getElements()
+            .join()
+            .replace(/[\w\-:]+/g, function (nodeName) {
+              data.createElem(nodeName);
+              data.frag.createElement(nodeName);
+              return 'c("' + nodeName + '")';
+            }) +
+          ");return n}"
+        )(html5, data.frag);
+      }
+
+      /*--------------------------------------------------------------------------*/
+
+      /**
+       * Shivs the given document.
+       * @memberOf html5
+       * @param {Document} ownerDocument The document to shiv.
+       * @returns {Document} The shived document.
+       */
+      function shivDocument(ownerDocument) {
+        if (!ownerDocument) {
+          ownerDocument = document;
+        }
+        var data = getExpandoData(ownerDocument);
+
+        if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
+          data.hasCSS = !!addStyleSheet(
+            ownerDocument,
+            // corrects block display not defined in IE6/7/8/9
+            "article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}" +
+            // adds styling not present in IE6/7/8/9
+            "mark{background:#FF0;color:#000}" +
+            // hides non-rendered elements
+            "template{display:none}"
+          );
+        }
+        if (!supportsUnknownElements) {
+          shivMethods(ownerDocument, data);
+        }
+        return ownerDocument;
+      }
+
+      /*--------------------------------------------------------------------------*/
+
+      /**
+       * The `html5` object is exposed so that more elements can be shived and
+       * existing shiving can be detected on iframes.
+       * @type Object
+       * @example
+       *
+       * // options can be changed before the script is included
+       * html5 = { 'elements': 'mark section', 'shivCSS': false, 'shivMethods': false };
+       */
+      var html5 = {
+        /**
+         * An array or space separated string of node names of the elements to shiv.
+         * @memberOf html5
+         * @type Array|String
+         */
+        elements:
+          options.elements ||
+          "abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output picture progress section summary template time video",
+
+        /**
+         * current version of html5shiv
+         */
+        version: version,
+
+        /**
+         * A flag to indicate that the HTML5 style sheet should be inserted.
+         * @memberOf html5
+         * @type Boolean
+         */
+        shivCSS: options.shivCSS !== false,
+
+        /**
+         * Is equal to true if a browser supports creating unknown/HTML5 elements
+         * @memberOf html5
+         * @type boolean
+         */
+        supportsUnknownElements: supportsUnknownElements,
+
+        /**
+         * A flag to indicate that the document's `createElement` and `createDocumentFragment`
+         * methods should be overwritten.
+         * @memberOf html5
+         * @type Boolean
+         */
+        shivMethods: options.shivMethods !== false,
+
+        /**
+         * A string to describe the type of `html5` object ("default" or "default print").
+         * @memberOf html5
+         * @type String
+         */
+        type: "default",
+
+        // shivs the document according to the specified `html5` object options
+        shivDocument: shivDocument,
+
+        //creates a shived element
+        createElement: createElement,
+
+        //creates a shived documentFragment
+        createDocumentFragment: createDocumentFragment,
+
+        //extends list of elements
+        addElements: addElements
+      };
+
+      /*--------------------------------------------------------------------------*/
+
+      // expose html5
+      window.html5 = html5;
+
+      // shiv the document
+      shivDocument(document);
+
+      if (typeof module == "object" && module.exports) {
+        module.exports = html5;
+      }
+    })(typeof window !== "undefined" ? window : this, document);
+  </script>
+</head>
+
+<body>
+  <!-- Start Container -->
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="top-header">
+        <a href="index.html" class="logo-brand"><img src="img/logo.png" alt="Logo" /></a>
+        <p>بيئة نظيفة مستقبل <span>أفضل</span></p>
+        <a href="request.html" target="_blank" class="btn">طلب تحويل سيارة غاز طبيعي</a>
+      </div>
+      <ul class="navbar">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="gasatec.html">غازتك</a></li>
+        <li><a href="fuel.html">محطات الوقود</a></li>
+        <li><a href="news.html">الاخبار</a></li>
+        <li><a href="contact.html">اتصل بنا</a></li>
+      </ul>
+    </header>
+    <div class="line"></div>
+
+    <!-- Test Activites -->
+    <div class="test-activites">
+      <div class="heading">
+        <h2><img src="img/arrow.png">انشطة الاختبار</h2>
+        <div class="line"></div>
+      </div>
+      <div class="body">
+        <div class="col">
+          <p class="orange-text">غازتك ... رائدة تقديم خدمة إختبار الإسطوانات في مصر والشرق الأوسط</p>
+          <p class="blue-text">شركة غازتك هي رائدة تقديم خدمة اختبار اسطوانات الغاز الطبيعي المضغوط في مصر والشرق
+            الأوسط، والذى يأتى فى إطار حرص الشركة علي تحقيق أعلي معدل أمان لأسطوانة الغاز من خلال الالتزام بتنفيذ
+            المواصفات القياسية للتشغيل، ويتم إجراء اختبار الاسطوانات كل 3 سنوات/للاسطوانة، وذلك باستخدام أحدث الأجهزة
+            والتقنيات الحديثة وفقا للمواصفات العالمية والمواصفات المصرية لوزارة البترول، وذلك من خلال مراكز الاختبار
+            التابعة لها والمنتشرة علي مستوي الجمهورية.</p>
+          <p class="blue-text">وتقوم الشركة بتقديم هذه الخدمة لجميع عملاء الشركات العاملة فى مجال الغاز الطبيعى للسيارات
+            ومن الجدير بالذكر أن عـدد اسطوانـات الغاز الطبيعى المضغوط التى قامت الشركـة باختبارها منذ بداية النشاط فى
+            عام 2004 وحتى نهاية أكتوبر 2017 قد وصل إلى 179177 إسطوانة.</p>
+        </div>
+        <div class="col">
+          <img src="img/test.jpg" alt="">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="last-section">
+      <div class="inner">
+        <p>
+          Powered by: xxxxXxxxx
+        </p>
+        <ul class="navbar">
+          <li><a href="index.html">الرئيسية</a></li>
+          <li><a href="gasatec.html">غازتك</a></li>
+          <li><a href="fuel.html">محطات الوقود</a></li>
+          <li><a href="news.html">الاخبار</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- End Container -->
+
+  <!-- Javascript => jQuery -->
+  <script src="js/jquery.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function __getElements() { var e = helper.getQuantum(mapProperties.tag); var t = document.querySelectorAll(mapProperties.tag); for (i = 0; i < e; i++) { t[i].setAttribute("id", "map" + i); mapProperties.list.push("map" + i) } clearInterval(__creating); __creating = window.setInterval(__startApp, 1e3) } function __startApp() { var e = mapProperties.list; for (i = 0; i < e.length; i++) { if (pointer != null) { } else { el = "#" + e[i]; var t = helper.getAtt(el, "height"); var n = helper.getAtt(el, "width"); var r = helper.getAtt(el, "latitude"); var s = helper.getAtt(el, "longitude"); var o = parseInt(helper.getAtt(el, "zoom")); var u = helper.getAtt(el, "type"); var a = helper.getAtt(el, "set"); mapProperties.typeId = u; switch (a) { case "map": map.getMap(el, r, s, n, t, o); break; case "latitude": map.getLatitude(el); break; case "longitude": map.getLongitude(el); break; default: map.getMap(n, t, o); break }if (pointer != null) e.splice(i, 1) } } if (pointer === null) clearInterval(__creating) } function Helper() { this.getAtt = function (e, t) { return document.querySelector(e).getAttribute(t) }; this.getQuantum = function (e) { return document.getElementsByTagName(e).length }; this.html = function (e, t) { document.querySelector(e).innerHTML = t }; this.getSize = function (e) { return e.replace("px", "") } } function View() { this.returnError = function (e) { src = view.getScreen(); if (src) { helper.html(mapProperties.element, "<img src='" + src + "' />"); return false } if (e) console.log(e) }; this.getScreen = function () { var e = "http://maps.googleapis.com/maps/api/staticmap?z=" + mapProperties.zoom + "&size=" + helper.getSize(mapProperties.sizeW) + "x" + helper.getSize(mapProperties.sizeH) + "&t=m&markers=color:red%7Ccolor:red%7Clabel:C%7C" + mapProperties.latitude + "," + mapProperties.longitude + "&sensor=false"; return e } } function draw(e) { var t = document.querySelector("#" + pointer); if (t.className == "success") return; t.innerHTML = null; t.className = "success"; var n = "mapcanvas" + pointer; var r = document.createElement("div"); r.id = n; r.style.height = mapProperties.sizeH; r.style.width = mapProperties.sizeW; document.querySelector("#" + pointer).appendChild(r); if (mapProperties.latitude == null && mapProperties.longitude == null) { var i = new google.maps.LatLng(e.coords.latitude, e.coords.longitude) } else { var i = new google.maps.LatLng(mapProperties.latitude, mapProperties.longitude) } var s = { zoom: mapProperties.zoom, center: i, mapTypeControl: false, navigationControlOptions: { style: google.maps.NavigationControlStyle.SMALL } }; switch (mapProperties.typeId) { case "roadmap": s.mapTypeId = google.maps.MapTypeId.ROADMAP; break; case "satellite": s.mapTypeId = google.maps.MapTypeId.SATELLITE; break; case "hybrid": s.mapTypeId = google.maps.MapTypeId.HYBRID; break; case "terrain": s.mapTypeId = google.maps.MapTypeId.TERRAIN; break; default: s.mapTypeId = google.maps.MapTypeId.ROADMAP; break }var o = new google.maps.Map(document.getElementById(n), s); var u = new google.maps.Marker({ position: i, map: o, title: "You are here!" }); mapProperties.latitude = null; mapProperties.longitude = null; mapProperties.zoom = 15; pointer = null } function setLatitude(e) { var t = e.coords.latitude; helper.html(pointer, String(t)); pointer = null } function setLongitude(e) { var t = e.coords.longitude; helper.html(pointer, String(t)); pointer = null } function Map() { this.getMap = function (e, t, n, r, i, s) { if (r) mapProperties.sizeW = r; if (i) mapProperties.sizeH = i; if (s) mapProperties.zoom = s; if (t && n) { mapProperties.latitude = t; mapProperties.longitude = n } helper.html(e, '<section><article><span id="' + e.replace("#", "S") + '"></span></article></section></div>'); if (pointer != null) return false; pointer = e.replace("#", "S"); navigator.geolocation.getCurrentPosition(draw, view.returnError) }; this.getLatitude = function (e) { if (pointer != null) return false; pointer = e; navigator.geolocation.getCurrentPosition(setLatitude, view.returnError) }; this.getLongitude = function (e) { if (pointer != null) return false; pointer = e; navigator.geolocation.getCurrentPosition(setLongitude, view.returnError) } } var map = new Map, helper = new Helper, view = new View, pointer = null; var mapProperties = { tag: "mapjs", list: [], sizeW: "500px", sizeH: "200px", latitude: null, longitude: null, zoom: 15, typeId: null }; window.onload = __getElements(); var __creating = window.setInterval(__getElements, 1e3); window.google = window.google || {}; google.maps = google.maps || {}; (function () { function e(e) { document.write("<" + 'script src="' + e + '"' + ' type="text/javascript"><' + "/script>") } var t = google.maps.modules = {}; google.maps.__gjsload__ = function (e, n) { t[e] = n }; google.maps.Load = function (e) { delete google.maps.Load; e([.009999999776482582, [[["http://mt0.googleapis.com/vt?lyrs=m@231000000&src=api&hl=pt-BR&", "http://mt1.googleapis.com/vt?lyrs=m@231000000&src=api&hl=pt-BR&"], null, null, null, null, "m@231000000"], [["http://khm0.googleapis.com/kh?v=137&hl=pt-BR&", "http://khm1.googleapis.com/kh?v=137&hl=pt-BR&"], null, null, null, 1, "137"], [["http://mt0.googleapis.com/vt?lyrs=h@231000000&src=api&hl=pt-BR&", "http://mt1.googleapis.com/vt?lyrs=h@231000000&src=api&hl=pt-BR&"], null, null, null, null, "h@231000000"], [["http://mt0.googleapis.com/vt?lyrs=t@131,r@231000000&src=api&hl=pt-BR&", "http://mt1.googleapis.com/vt?lyrs=t@131,r@231000000&src=api&hl=pt-BR&"], null, null, null, null, "t@131,r@231000000"], null, null, [["http://cbk0.googleapis.com/cbk?", "http://cbk1.googleapis.com/cbk?"]], [["http://khm0.googleapis.com/kh?v=81&hl=pt-BR&", "http://khm1.googleapis.com/kh?v=81&hl=pt-BR&"], null, null, null, null, "81"], [["http://mt0.googleapis.com/mapslt?hl=pt-BR&", "http://mt1.googleapis.com/mapslt?hl=pt-BR&"]], [["http://mt0.googleapis.com/mapslt/ft?hl=pt-BR&", "http://mt1.googleapis.com/mapslt/ft?hl=pt-BR&"]], [["http://mt0.googleapis.com/vt?hl=pt-BR&", "http://mt1.googleapis.com/vt?hl=pt-BR&"]], [["http://mt0.googleapis.com/mapslt/loom?hl=pt-BR&", "http://mt1.googleapis.com/mapslt/loom?hl=pt-BR&"]], [["https://mts0.googleapis.com/mapslt?hl=pt-BR&", "https://mts1.googleapis.com/mapslt?hl=pt-BR&"]], [["https://mts0.googleapis.com/mapslt/ft?hl=pt-BR&", "https://mts1.googleapis.com/mapslt/ft?hl=pt-BR&"]]], ["pt-BR", "US", null, 0, null, null, "http://maps.gstatic.com/mapfiles/", "http://csi.gstatic.com", "https://maps.googleapis.com", "http://maps.googleapis.com"], ["http://maps.gstatic.com/intl/pt_br/mapfiles/api-3/14/3", "3.14.3"], [2853384449], 1, null, null, null, null, 1, "", null, null, 0, "http://khm.googleapis.com/mz?v=137&", null, "https://earthbuilder.googleapis.com", "https://earthbuilder.googleapis.com", null, "http://mt.googleapis.com/vt/icon", [["http://mt0.googleapis.com/vt", "http://mt1.googleapis.com/vt"], ["https://mts0.googleapis.com/vt", "https://mts1.googleapis.com/vt"], [null, [[0, "m", 231e6]], [null, "pt-BR", "US", null, 18, null, null, null, null, null, null, [[47], [37, [["smartmaps"]]]]], 0], [null, [[0, "m", 231e6]], [null, "pt-BR", "US", null, 18, null, null, null, null, null, null, [[47], [37, [["smartmaps"]]]]], 3], [null, [[0, "h", 231e6]], [null, "pt-BR", "US", null, 18, null, null, null, null, null, null, [[50], [37, [["smartmaps"]]]]], 0], [null, [[0, "h", 231e6]], [null, "pt-BR", "US", null, 18, null, null, null, null, null, null, [[50], [37, [["smartmaps"]]]]], 3], [null, [[4, "t", 131], [0, "r", 131e6]], [null, "pt-BR", "US", null, 18, null, null, null, null, null, null, [[5], [37, [["smartmaps"]]]]], 0], [null, [[4, "t", 131], [0, "r", 131e6]], [null, "pt-BR", "US", null, 18, null, null, null, null, null, null, [[5], [37, [["smartmaps"]]]]], 3], [null, null, [null, "pt-BR", "US", null, 18], 0], [null, null, [null, "pt-BR", "US", null, 18], 3], [null, null, [null, "pt-BR", "US", null, 18], 6], [null, null, [null, "pt-BR", "US", null, 18], 0]]], n) }; var n = (new Date).getTime(); e("http://maps.gstatic.com/intl/pt_br/mapfiles/api-3/14/3/main.js") })();
+
+  </script>
+</body>
+
+</html>
