@@ -545,3 +545,139 @@ td, th {
   grid-template-columns: 1fr 1fr;
 }
 /* ----------------------------------------------End Safety Factors Page----------------------------------------------------- */
+
+
+/* ----------------------------------------------Start online conversion Page----------------------------------------------------- */
+.online-conversion {
+  background-color: #fff;
+  padding: 25px;
+}
+.online-conversion .heading {
+  color: var(--blue);
+  padding-bottom: 50px;
+}
+.online-conversion .hero-img {
+  text-align: center;
+}
+.online-conversion .orange-text {
+  color: var(--orange);
+}
+.online-conversion .body {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 10px;
+}
+/* ----------------------------------------------End online conversion Page----------------------------------------------------- */
+
+
+/* ----------------------------------------------Start Achievements Page----------------------------------------------------- */
+.achievements {
+  background-color: #fff;
+  padding: 25px;
+}
+.achievements .hero-img {
+  text-align: center;
+}
+.achievements .heading {
+  color: var(--blue);
+  padding-bottom: 50px;
+}
+.achievements .body {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 10px;
+}
+.achievements .body h3 {
+  color: var(--orange);
+  padding: 20px 0;
+}
+.achievements .body img {
+  width: 100%;
+}
+.achievements .body p {
+  color: var(--blue);
+  padding: 15px 0;
+}
+/* ----------------------------------------------End Achievements Page----------------------------------------------------- */
+
+
+/* ----------------------------------------------Start apps Page----------------------------------------------------- */
+.apps {
+  background-color: #fff;
+  padding: 25px;
+}
+.apps .hero-img {
+  text-align: center;
+}
+.apps .heading {
+  color: var(--blue);
+}
+.apps h5 {
+  text-align: center;
+  padding: 20px;
+  color: var(--red);
+} 
+.apps h3 {
+  color: var(--orange);
+  padding: 10px 0;
+}
+.apps p {
+  color: var(--blue);
+}
+/* ----------------------------------------------End apps Page----------------------------------------------------- */
+
+
+/* ----------------------------------------------Start What Page----------------------------------------------------- */
+.what {
+  background-color: #fff;
+  padding: 25px;
+}
+.what .hero-img {
+  text-align: center;
+}
+.what .heading {
+  color: var(--blue);
+}
+.what p {
+  color: var(--blue);
+  padding: 25px 0;
+}
+.what h3 {
+  color: var(--orange);
+}
+/* ----------------------------------------------End What Page----------------------------------------------------- */
+
+
+/* ----------------------------------------------Start Features Page----------------------------------------------------- */
+.features {
+  background-color: #fff;
+  padding: 25px;
+}
+.features .hero-img {
+  text-align: center;
+}
+.features .heading {
+  color: var(--blue);
+  padding-bottom: 25px;
+}
+.features .body {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 10px;
+}
+.features .body img {
+  width: 100%;  
+}
+.features .body h3 {
+  color: var(--orange);
+  padding-bottom: 15px;
+}
+.features .body ul {
+  list-style-position: inside;
+  padding: 10px;
+}
+.features .body ul li {
+  color: var(--blue);
+  line-height: 2;
+}
+/* ----------------------------------------------End Features Page----------------------------------------------------- */
